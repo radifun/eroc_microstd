@@ -1,0 +1,10 @@
+[package]
+name = "eroc-nostd"
+version = "0.0.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "An alternative implementation of std library for no_std environment."
+repository = "https://github.com/radifun/eroc-nostd"
+readme = "README.md"
+
+publish = false

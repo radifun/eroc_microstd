@@ -1,0 +1,21 @@
+# Operating systems
+*~
+
+Thumbs.db
+[Dd]esktop.ini
+
+.DS_Store
+
+# Editors
+\#*\#
+.\#*
+
+.cache
+.vscode
+
+# Project
+build
+target
+Cargo.lock
+.cargo
+.work
