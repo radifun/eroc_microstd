@@ -8,3 +8,6 @@ repository = "https://github.com/radifun/eroc-nostd"
 readme = "README.md"
 
 publish = false
+
+[build-dependencies]
+regex = "1.7.1"

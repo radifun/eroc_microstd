@@ -33,8 +33,7 @@ pub mod borrow {
     pub use super::_1alloc::borrow::*;
 }
 
-pub use _1alloc::boxed;
-pub use _1alloc::collections;
+pub use _1alloc::{boxed, collections};
 
 pub mod ffi {
     pub use super::_0core::ffi::*;
@@ -70,5 +69,4 @@ pub mod task {
     pub use super::_1alloc::task::*;
 }
 
-pub use _1alloc::format;
-pub use _1alloc::vec;
+pub use _1alloc::{format, vec};

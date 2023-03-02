@@ -16,11 +16,4 @@
 // limitations under the License.
 // =================================================================================================
 
-//! An alternative implemenation of the Rust standard library for `no_std` environment.
-
-#![no_std]
-
-mod builtin;
-pub use builtin::*;
-
-pub mod error;
+include!(concat!(env!("OUT_DIR"), "/rustlib/src/error.rs"));

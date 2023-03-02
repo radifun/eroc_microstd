@@ -16,11 +16,17 @@
 // limitations under the License.
 // =================================================================================================
 
-//! An alternative implemenation of the Rust standard library for `no_std` environment.
+use std::{env, path};
 
-#![no_std]
+#[path = "import/error.rs"]
+mod error;
 
-mod builtin;
-pub use builtin::*;
+fn main() {
+    let out_path = path::PathBuf::from(env::var("OUT_DIR").unwrap());
+    let rustlib_path = path::PathBuf::from(env::var("RUSTLIB_PATH").unwrap());
 
-pub mod error;
+    let core_path = rustlib_path.join("src/rust/library/core");
+    let gen_path = out_path.join("rustlib");
+
+    error::import_error(&core_path.join("src/error.rs"), &gen_path.join("src/error.rs"));
+}
