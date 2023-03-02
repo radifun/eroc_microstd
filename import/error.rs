@@ -21,11 +21,12 @@ use std::path;
 mod importer;
 use importer::*;
 
+/// Imports and alters [`core::error`] module.
 pub fn import_error(src_path: &path::Path, dst_path: &path::Path) {
     let f = read_file(src_path);
 
     // Keeps function `type_id` of `Error` trait even though it is marked as unstable.
-    // For some reasons it is used by other stable function: (dyn Error + 'static)::is.
+    // For some reasons it is used by other stable function, e.g. (dyn Error + 'static)::is.
     let f = BlockRegex::new(
         f,
         Some(r##"^\s*(?:#\[unstable|feature|reason|issue|\)\]).*"##),
@@ -36,7 +37,7 @@ pub fn import_error(src_path: &path::Path, dst_path: &path::Path) {
 
     let f = remove_line(f, r##"^\s*#\[unstable\(feature = "error_type_id""##);
 
-    // Removes attributes that are allowed in internal/built-in libraries.
+    // Removes attributes that are only allowed in internal/built-in libraries.
     let f = remove_stable_attr(f);
     let f = remove_doc_attr(f);
 
@@ -47,12 +48,11 @@ pub fn import_error(src_path: &path::Path, dst_path: &path::Path) {
     let f = remove_unstable_features(f);
     let f = remove_attr(f, "unstable");
 
-    // Other things
+    // Other things.
     let f = remove_block(f, r"impl Error for crate::char::ParseCharError"); // Use unstable feature.
     let f = remove_block(f, r"impl Error for crate::ffi::FromBytesWithNulError"); // Use unstable feature.
     let f = remove_fn(f, "provide"); // It is unstable feature of `Error` trait.
-
-    let f = remove_text(f, "Demand, Provider, ");
+    let f = remove_text(f, "Demand, Provider, "); // Unused and unstable.
 
     write_file(f, dst_path);
 }
