@@ -16,16 +16,6 @@
 // limitations under the License.
 // =================================================================================================
 
-//! An alternative implemenation of the Rust standard library for `no_std` environment.
+mod error;
 
-#![no_std]
-
-extern crate alloc;
-
-mod builtin;
-pub use builtin::*;
-
-pub mod error;
-pub mod io;
-
-mod sys;
+pub use error::*;

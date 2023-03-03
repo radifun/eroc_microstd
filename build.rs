@@ -18,15 +18,21 @@
 
 use std::{env, path};
 
-#[path = "import/error.rs"]
-mod error;
+#[path = "builder/core_error.rs"]
+mod core_error;
+
+#[path = "builder/std_io.rs"]
+mod std_io;
 
 fn main() {
     let out_path = path::PathBuf::from(env::var("OUT_DIR").unwrap());
     let rustlib_path = path::PathBuf::from(env::var("RUSTLIB_PATH").unwrap());
 
+    let std_path = rustlib_path.join("src/rust/library/std");
     let core_path = rustlib_path.join("src/rust/library/core");
     let gen_path = out_path.join("rustlib");
 
-    error::import_error(&core_path.join("src/error.rs"), &gen_path.join("src/error.rs"));
+    core_error::import(&core_path.join("src/error.rs"), &gen_path.join("src/error.rs"));
+
+    std_io::import(&std_path.join("src/io"), &gen_path.join("src/io"));
 }

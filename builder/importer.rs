@@ -16,6 +16,8 @@
 // limitations under the License.
 // =================================================================================================
 
+#![allow(unused)]
+
 use std::{fs, io, path};
 
 // =================================================================================================
@@ -95,15 +97,31 @@ pub fn remove_line<T: Transformer>(inner: T, text: &str) -> BlockRegex<T> {
     return BlockRegex::new(inner, None, text, None, &[]);
 }
 
-/// Create a transformer to remove part of lines that matches the specified regex rule.
+/// Creates a transformer to remove part of lines that matches the specified regex rule.
 pub fn remove_text<T: Transformer>(inner: T, text: &str) -> BlockRegex<T> {
     return BlockRegex::new(
         inner,
         None,
-        &format!("^(.*){}(.*)", regex::escape(text)),
+        &format!("^(.*){}(.*)", text),
         None,
         &["${1}${2}"],
     );
+}
+
+/// Creates a transformer to replace part of lines that matches the specified regex rule.
+pub fn replace_text<T: Transformer>(inner: T, before: &str, after: &str) -> BlockRegex<T> {
+    return BlockRegex::new(
+        inner,
+        None,
+        &format!("^(.*){}(.*)", before),
+        None,
+        &[&format!("${{1}}{}${{2}}", after)],
+    );
+}
+
+/// Inserts the specified block to text to the beginning after file, after the module documentation.
+pub fn insert_to_beginning<T: Transformer>(inner: T, text: &[&str]) -> InsertToBeginning<T> {
+    return InsertToBeginning::new(inner, text);
 }
 
 // =================================================================================================
@@ -300,6 +318,63 @@ impl<T: Transformer> Transformer for BlockRegex<T> {
                 return Some(dst_lines);
             }
         }
+    }
+}
+
+// =================================================================================================
+// Insert code to the beginning of the file.
+// =================================================================================================
+
+pub struct InsertToBeginning<T: Transformer> {
+    inner: T,
+    text: Vec<String>,
+
+    doc_re: regex::Regex,
+    done: bool,
+}
+
+// Constructors ------------------------------------------------------------------------------------
+
+impl<T: Transformer> InsertToBeginning<T> {
+    pub fn new(inner: T, text: &[&str]) -> Self {
+        return Self {
+            inner,
+            text: arr_str_to_vec_string(text),
+
+            doc_re: regex::Regex::new(r"^\s*//!.*").unwrap(),
+            done: false,
+        };
+    }
+}
+
+// Implement `Transformer` trait -------------------------------------------------------------------
+
+impl<T: Transformer> Transformer for InsertToBeginning<T> {
+    fn next_lines(&mut self) -> Option<Vec<String>> {
+        if let Some(src_lines) = self.inner.next_lines() {
+            if self.done {
+                return Some(src_lines);
+            } else {
+                let mut dst_lines = Vec::<String>::with_capacity(src_lines.len() + self.text.len());
+
+                for line in &src_lines {
+                    if !self.done && !self.doc_re.is_match(&line) {
+                        // Only inserts the text after the module documentation.
+                        for new_line in &self.text {
+                            dst_lines.push(format!("{}\n", new_line));
+                        }
+
+                        self.done = true;
+                    }
+
+                    dst_lines.push(line.clone());
+                }
+
+                return Some(dst_lines);
+            }
+        }
+
+        return None;
     }
 }
 

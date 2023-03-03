@@ -15,8 +15,9 @@ This project is a part of [Eroc](https://github.com/radifun/eroc).
 There are also additional features implemented or imported from `std` library. The complete list of features, their functional parity and test coverage are provided as follows:
 
 | Name                        | Reference                   | Functional                                                | Test                                                      | Notes |
-|-----------------------------|-----------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-------|
+|:----------------------------|:----------------------------|:----------------------------------------------------------|:----------------------------------------------------------|:------|
 | `error`                     | `core::error`               | ![](https://img.shields.io/badge/-complete-blue)          | ![](https://img.shields.io/badge/-not%20started-red)      | |
+| `io`                        | `std::io`                   | ![](https://img.shields.io/badge/-in%20progress-yellow)   | ![](https://img.shields.io/badge/-not%20started-red)      | |
 
 ## License
 

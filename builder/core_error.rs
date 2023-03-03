@@ -22,7 +22,7 @@ mod importer;
 use importer::*;
 
 /// Imports and alters [`core::error`] module.
-pub fn import_error(src_path: &path::Path, dst_path: &path::Path) {
+pub fn import(src_path: &path::Path, dst_path: &path::Path) {
     let f = read_file(src_path);
 
     // Keeps function `type_id` of `Error` trait even though it is marked as unstable.

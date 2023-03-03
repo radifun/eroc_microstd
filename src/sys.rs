@@ -16,16 +16,20 @@
 // limitations under the License.
 // =================================================================================================
 
-//! An alternative implemenation of the Rust standard library for `no_std` environment.
+use crate::io;
 
-#![no_std]
+pub mod os {
 
-extern crate alloc;
+    pub fn errno() -> i32 {
+        return 0;
+    }
 
-mod builtin;
-pub use builtin::*;
+    pub fn error_string(_errno: i32) -> &'static str {
+        // In the standard library, this function returns a `String` object.
+        return "";
+    }
+}
 
-pub mod error;
-pub mod io;
-
-mod sys;
+pub fn decode_error_kind(_errno: i32) -> io::ErrorKind {
+    return io::ErrorKind::Other;
+}
