@@ -99,27 +99,16 @@ pub fn remove_line<T: Transformer>(inner: T, text: &str) -> BlockRegex<T> {
 
 /// Creates a transformer to remove part of lines that matches the specified regex rule.
 pub fn remove_text<T: Transformer>(inner: T, text: &str) -> BlockRegex<T> {
-    return BlockRegex::new(
-        inner,
-        None,
-        &format!("^(.*){}(.*)", text),
-        None,
-        &["${1}${2}"],
-    );
+    return replace_text(inner, text, "");
 }
 
 /// Creates a transformer to replace part of lines that matches the specified regex rule.
 pub fn replace_text<T: Transformer>(inner: T, before: &str, after: &str) -> BlockRegex<T> {
-    return BlockRegex::new(
-        inner,
-        None,
-        &format!("^(.*){}(.*)", before),
-        None,
-        &[&format!("${{1}}{}${{2}}", after)],
-    );
+    return BlockRegex::new(inner, None, before, None, &[after]);
 }
 
-/// Inserts the specified block to text to the beginning after file, after the module documentation.
+/// Creates a transformer to insert the specified block to text
+/// to the beginning the file right after the module documentation.
 pub fn insert_to_beginning<T: Transformer>(inner: T, text: &[&str]) -> InsertToBeginning<T> {
     return InsertToBeginning::new(inner, text);
 }

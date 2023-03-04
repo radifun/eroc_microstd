@@ -23,6 +23,9 @@
 //!     It requires dynamic memory allocation, which does not always exist in `no_std`.
 //!     For now the library only allows &'static str as the error data of custom error.
 //!     In the future it can use `feature = alloc` to allow dynamic memory allocation.
+//!   - [`std::io::Error`] internal data is always packed using `repr_unpacked`.
+//!     `repr_bitpacked` uses a bunch of unstable features which complicates the import process,
+//!     and is rarely used (bare metal software running on 64-bit processor).
 
 use std::path;
 
@@ -80,7 +83,7 @@ fn import_error(src_path: &path::Path, dst_path: &path::Path) {
         ],
     );
 
-    // Change custom kind to contain static string slice instead of `Box`.
+    // Changes custom kind to contain static string slice instead of `Box`.
     let f = replace_text(f, &regex::escape("Box<dyn error::Error + Send + Sync>"), "&'static str");
     let f = replace_text(
         f,
@@ -90,6 +93,9 @@ fn import_error(src_path: &path::Path, dst_path: &path::Path) {
     let f = replace_text(f, r"\(c\) => Some\(&(?:mut )?\*c.error\)", "(_) => None");
     let f = replace_text(f, r"\(c\) => c\.error\.(?:cause|source)\(\)", "(_) => None");
     let f = replace_text(f, &regex::escape("c.error.description()"), "c.error");
+
+    // Uses `alloc` crate.
+    let f = insert_to_beginning(f, &["extern crate alloc;"]);
 
     write_file(f, dst_path);
 }
