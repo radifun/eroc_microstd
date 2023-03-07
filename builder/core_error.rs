@@ -54,5 +54,9 @@ pub fn import(src_path: &path::Path, dst_path: &path::Path) {
     let f = remove_fn(f, "provide"); // It is unstable feature of `Error` trait.
     let f = remove_text(f, "Demand, Provider, "); // Unused and unstable.
 
+    // Removes tests.
+    let f = remove_attr(f, r"cfg\(test\)");
+    let f = remove_line(f, "mod tests");
+
     write_file(f, dst_path);
 }

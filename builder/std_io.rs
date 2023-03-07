@@ -97,6 +97,10 @@ fn import_error(src_path: &path::Path, dst_path: &path::Path) {
     // Uses `alloc` crate.
     let f = insert_to_beginning(f, &["extern crate alloc;"]);
 
+    // Removes tests.
+    let f = remove_attr(f, r"cfg\(test\)");
+    let f = remove_line(f, "mod tests");
+
     write_file(f, dst_path);
 }
 
