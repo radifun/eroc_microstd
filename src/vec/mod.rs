@@ -16,16 +16,6 @@
 // limitations under the License.
 // =================================================================================================
 
-//! An alternative implemenation of the Rust standard library for `no_std` environment.
+mod vec;
 
-#![no_std]
-
-mod builtin;
-pub use builtin::*;
-
-pub mod error;
-pub mod io;
-
-mod sys;
-
-pub mod vec;
+pub use vec::*;
